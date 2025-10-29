@@ -23,16 +23,19 @@
   },
   "homepage": "https://github.com/rafaelpeinado/certo-ou-errado-back#readme",
   "dependencies": {
+    "@types/pg": "^8.15.6",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
-    "sqlite3": "^5.1.7"
+    "pg": "^8.16.3",
+    "pg-pool": "^3.10.1"
+
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",
     "@types/node": "^24.9.2",
-    "@types/sqlite3": "^5.1.0",
+
     "nodemon": "^3.1.10",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"

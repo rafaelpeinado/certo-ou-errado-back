@@ -2,15 +2,45 @@ import { all, get, run } from '../db';
 import type { User } from '../types';
 
 export async function listUsers(): Promise<User[]> {
-    return all<User>(`SELECT * FROM users ORDER BY id DESC`);
+    return all<User>(`
+        SELECT 
+            id,
+            game_id AS "gameId",
+            name,
+            role,
+            class,
+            age,
+            created_at AS "createdAt"
+        FROM users 
+        ORDER BY id DESC`);
 }
 
 export async function getUserById(id: number): Promise<User | undefined> {
-    return get<User>(`SELECT * FROM users WHERE id = ?`, [id]);
+    return get<User>(`
+        SELECT 
+            id,
+            game_id AS "gameId",
+            name,
+            role,
+            class,
+            age,
+            created_at AS "createdAt"
+        FROM users 
+        WHERE id = $1`, [id]);
 }
 
 export async function getUser(user: User): Promise<User | undefined> {
-    return get<User>(`SELECT * FROM users WHERE age = ? AND name = ? AND role = ? AND class = ?`, [user.age, user.name, user.role, user.class]);
+    return get<User>(`
+        SELECT 
+            id,
+            game_id as "gameId",
+            name,
+            role,
+            class,
+            age,
+            created_at AS "createdAt"
+        FROM users 
+        WHERE age = $1 AND name = $2 AND role = $3 AND class = $4`, [user.age, user.name, user.role, user.class]);
 }
 
 export async function createUser(input: {
@@ -21,19 +51,20 @@ export async function createUser(input: {
 }): Promise<User> {
 
     const res = await run(
-        `INSERT INTO users (name, gameId, role, class, age)
-     VALUES (?, ?, ?, ?, ?)`,
+        `INSERT INTO users (name, game_id, role, class, age)
+     VALUES ($1, $2, $3, $4, $5)
+     RETURNING id`,
         [input.name, genUserId(input.name), input.role, input.class ?? null, input.age]
     );
 
-    const created = await getUserById(res.lastID);
+    const created = await getUserById(res.rows[0].id);
     if (!created) throw new Error('Falha ao recuperar usuário criado');
     return created;
 }
 
 export async function updateUser(
     id: number,
-    input: Partial<Omit<User, 'id' | 'createdAt' | 'updated_at'>>
+    input: Partial<Omit<User, 'id' | 'created_at' | 'updated_at'>>
 ): Promise<User | undefined> {
     const fields: string[] = [];
     const params: unknown[] = [];
