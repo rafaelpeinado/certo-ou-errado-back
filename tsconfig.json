@@ -1,18 +1,24 @@
 {
     "compilerOptions": {
-        "target": "ES2020",
-        "module": "CommonJS",
-        "moduleResolution": "node",
+        "target": "ES2022",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
         "outDir": "dist",
-        "rootDir": ".",
+        "rootDir": "src",
         "strict": true,
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
-        "resolveJsonModule": true,
         "skipLibCheck": true,
+        "resolveJsonModule": true,
+        "types": [
+            "node"
+        ] // <- importante para reconhecer 'process', 'fs', etc.
     },
     "include": [
         "src",
         "scripts"
+    ],
+    "exclude": [
+        "node_modules"
     ]
 }
