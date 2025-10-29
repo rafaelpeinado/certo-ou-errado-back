@@ -18,3 +18,9 @@ export type Ranking = {
     createdAt: string;
 };
 
+export interface DatabaseResult<T = any> {
+    changes: number;
+    lastID: number;
+    rows: T[];
+}
+

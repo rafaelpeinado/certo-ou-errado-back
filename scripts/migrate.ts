@@ -4,23 +4,23 @@ import { run } from '../src/db';
   try {
     await run(`
       CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        gameId TEXT NOT NULL UNIQUE,
+        id SERIAL PRIMARY KEY,
+        game_id TEXT NOT NULL UNIQUE,
         name TEXT NOT NULL,
         role TEXT NOT NULL CHECK (role IN ('STUDENT', 'VISITOR')),
         class TEXT,
         age INTEGER,
-        createdAt TEXT NOT NULL DEFAULT (datetime('now'))
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
       )
     `);
     await run(`
     CREATE TABLE IF NOT EXISTS ranking (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      userId INTEGER NOT NULL,
-      timeMs INTEGER NOT NULL,
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL,
+      time_ms INTEGER NOT NULL,
       score INTEGER NOT NULL,
-      created_at TEXT NOT NULL DEFAULT (datetime('now')),
-      FOREIGN KEY (userId) REFERENCES users(id)
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id)
     )
   `);
 

@@ -1,48 +1,42 @@
-import path from 'path';
-import fs from 'fs';
-import sqlite3 from 'sqlite3';
+import { Pool } from 'pg';
 import dotenv from 'dotenv';
+import { DatabaseResult } from './types';
 dotenv.config();
 
-const dbFile = process.env.DB_FILE || './data/app.sqlite';
-const dbDir = path.dirname(dbFile);
-if (!fs.existsSync(dbDir)) {
-    fs.mkdirSync(dbDir, { recursive: true });
-}
-
-sqlite3.verbose();
-export const db = new sqlite3.Database(dbFile, (err) => {
-    if (err) {
-        console.error('Erro ao abrir SQLite:', err);
-        process.exit(1);
-    } else {
-        console.log('SQLite conectado em', dbFile);
-    }
+const pool = new Pool({
+    user: process.env.DB_USER || 'appuser',
+    password: process.env.DB_PASSWORD || 'appsecret',
+    host: process.env.DB_HOST || 'localhost',
+    port: parseInt(process.env.DB_PORT || '5432'),
+    database: process.env.DB_NAME || 'certo_ou_errado'
 });
 
-export function run(sql: string, params: unknown[] = []) {
-    return new Promise<{ changes: number; lastID: number }>((resolve, reject) => {
-        db.run(sql, params, function (this: sqlite3.RunResult, err) {
-            if (err) return reject(err);
-            resolve({ changes: this.changes, lastID: this.lastID });
-        });
-    });
+pool.on('connect', () => {
+    console.log('PostgreSQL conectado');
+});
+
+pool.on('error', (err) => {
+    console.error('Erro no PostgreSQL:', err);
+    process.exit(1);
+});
+
+export const db = pool;
+
+export async function run<T = any>(sql: string, params: unknown[] = []): Promise<DatabaseResult<T>> {
+    const result = await pool.query(sql, params);
+    return {
+        changes: result.rowCount || 0,
+        lastID: result.rows[0]?.id,
+        rows: result.rows
+    };
 }
 
-export function get<T = any>(sql: string, params: unknown[] = []) {
-    return new Promise<T | undefined>((resolve, reject) => {
-        db.get(sql, params, (err, row) => {
-            if (err) return reject(err);
-            resolve(row as T | undefined);
-        });
-    });
+export async function get<T = any>(sql: string, params: unknown[] = []) {
+    const result = await pool.query(sql, params);
+    return result.rows[0] as T | undefined;
 }
 
-export function all<T = any>(sql: string, params: unknown[] = []) {
-    return new Promise<T[]>((resolve, reject) => {
-        db.all(sql, params, (err, rows) => {
-            if (err) return reject(err);
-            resolve(rows as T[]);
-        });
-    });
+export async function all<T = any>(sql: string, params: unknown[] = []) {
+    const result = await pool.query(sql, params);
+    return result.rows as T[];
 }
