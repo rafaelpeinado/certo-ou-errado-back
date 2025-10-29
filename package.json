@@ -1,0 +1,40 @@
+{
+  "name": "certo-ou-errado-back",
+  "version": "1.0.0",
+  "main": "dist/src/server.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc",
+    "start": "node dist/src/server.js",
+    "migrate": "ts-node-dev --transpile-only scripts/migrate.ts",
+    "seed": "ts-node-dev --transpile-only scripts/seed.ts",
+    "migrate:prod": "node dist/scripts/migrate.js",
+    "seed:prod": "node dist/scripts/seed.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rafaelpeinado/certo-ou-errado-back.git"
+  },
+  "keywords": [],
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/rafaelpeinado/certo-ou-errado-back/issues"
+  },
+  "homepage": "https://github.com/rafaelpeinado/certo-ou-errado-back#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.5",
+    "@types/node": "^24.9.1",
+    "@types/sqlite3": "^5.1.0",
+    "nodemon": "^3.1.10",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3"
+  }
+}
