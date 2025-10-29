@@ -10,7 +10,7 @@ const PORT = Number(process.env.PORT) || 3000;
 
 // habilitar CORS antes das rotas
 app.use(cors({
-    origin: 'https://certo-ou-errado-front.onrender.com/',
+    origin: 'https://certo-ou-errado-front.onrender.com',
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: false
